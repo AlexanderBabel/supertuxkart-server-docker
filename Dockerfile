@@ -2,11 +2,11 @@
 # Build stage
 # -----------
 
-FROM debian:10-slim AS build
+FROM debian:11-slim AS build
 WORKDIR /build
 
 # Set stk version that should be built
-ENV VERSION=1.2
+ENV VERSION=1.3
 
 # Install build dependencies
 RUN apt-get update && \
@@ -35,7 +35,7 @@ RUN mkdir stk-code/cmake_build && \
 # Final stage
 # -----------
 
-FROM debian:10-slim
+FROM debian:11-slim
 WORKDIR /app
 
 # Install libcurl dependency
