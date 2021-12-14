@@ -2,23 +2,14 @@
 # Build stage
 # -----------
 
-FROM debian:10-slim AS build
+FROM alpine:3.15 AS build
 WORKDIR /build
 
 # Set stk version that should be built
-ENV VERSION=1.2
+ENV VERSION=1.3
 
 # Install build dependencies
-RUN apt-get update && \
-    apt-get install -y build-essential \
-                       cmake \
-                       git \
-                       libcurl4-openssl-dev \
-                       libenet-dev \
-                       libssl-dev \
-                       pkg-config \
-                       subversion \
-                       zlib1g-dev
+RUN apk add alpine-sdk git cmake openssl-dev zlib-dev libssl1.1 curl-dev subversion
 
 # Get code and assets
 RUN git clone --branch ${VERSION} --depth=1 https://github.com/supertuxkart/stk-code.git
@@ -35,13 +26,11 @@ RUN mkdir stk-code/cmake_build && \
 # Final stage
 # -----------
 
-FROM debian:10-slim
+FROM alpine:3.15
 WORKDIR /app
 
 # Install libcurl dependency
-RUN apt-get update && \
-    apt-get install -y libcurl4-openssl-dev curl unzip && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache curl unzip libstdc++ bash
 
 # Copy artifacts from build stage
 COPY --from=build /usr/local/bin/supertuxkart /usr/local/bin
